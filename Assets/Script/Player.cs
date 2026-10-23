@@ -47,13 +47,14 @@ public class Player : MonoBehaviour
             PrepareMove();
         }
 
-        if (OnePressed() && IsChoosing)
+        // Choix du portail : touche A ou B
+        if (LetterPressed("a", KeyCode.A) && IsChoosing)
         {
             IsChoosing = false;
             PlaceOnCell(PortalA);
         }
 
-        if (TwoPressed() && IsChoosing)
+        if (LetterPressed("b", KeyCode.B) && IsChoosing)
         {
             IsChoosing = false;
             PlaceOnCell(PortalB);
@@ -170,22 +171,30 @@ public class Player : MonoBehaviour
 #endif
     }
 
-    private bool OnePressed()
+    // Lit une lettre selon la disposition du clavier (marche en AZERTY comme en QWERTY)
+    private bool LetterPressed(string letter, KeyCode legacyKey)
     {
 #if ENABLE_INPUT_SYSTEM
-        return Keyboard.current != null && Keyboard.current.digit1Key.wasPressedThisFrame;
+        if (Keyboard.current == null) return false;
+        var key = Keyboard.current.FindKeyOnCurrentKeyboardLayout(letter);
+        return key != null && key.wasPressedThisFrame;
 #else
-        return Input.GetKeyDown(KeyCode.Alpha1);
+        return Input.GetKeyDown(legacyKey);
 #endif
     }
 
-    private bool TwoPressed()
+    // ===== "Print String" à l'écran =====
+    // Affiche le choix du portail en haut à gauche tant que le joueur n'a pas choisi
+    private void OnGUI()
     {
-#if ENABLE_INPUT_SYSTEM
-        return Keyboard.current != null && Keyboard.current.digit2Key.wasPressedThisFrame;
-#else
-        return Input.GetKeyDown(KeyCode.Alpha2);
-#endif
+        if (!IsChoosing) return;
+
+        GUIStyle style = new GUIStyle(GUI.skin.label);
+        style.fontSize = 28;
+        style.normal.textColor = Color.cyan;
+
+        GUI.Label(new Rect(20, 20, 1000, 50),
+            "Portail ! Choisis entre A (case " + PortalA + ") ou B (case " + PortalB + ")", style);
     }
 
     private bool MPressed()

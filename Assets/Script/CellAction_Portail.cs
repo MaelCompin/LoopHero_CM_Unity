@@ -17,6 +17,6 @@ public class CellAction_Portail : CellAction
         player.PortalB = destinationB;
         player.IsChoosing = true;
 
-        Debug.Log("Portail. Appuie sur 1 (case " + destinationA + ") ou 2 (case " + destinationB + ").");
+        Debug.Log("Portail. Choisis entre A (case " + destinationA + ") ou B (case " + destinationB + ").");
     }
 }
